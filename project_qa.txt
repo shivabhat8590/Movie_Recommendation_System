@@ -1,0 +1,456 @@
+================================================================================
+                    🎬 MOVIEAI — RECOMMENDATION SYSTEM 🎬
+                  PROJECT VIVA & TECHNICAL Q&A HANDBOOK
+================================================================================
+This comprehensive handbook compiles essential questions, architectural deep dives,
+algorithmic math, and detailed explanations of the MovieAI full-stack platform.
+Use this document to prepare for project reviews, vivas, and presentations.
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. General Project Concept & Objectives (Q1 - Q8)
+2. Frontend Architecture (React.js & CSS3 Styling) (Q9 - Q15)
+3. Backend Server & API Security (Node.js, Express, & MongoDB) (Q16 - Q24)
+4. Machine Learning & Recommendation Mathematics (Python & FastAPI) (Q25 - Q34)
+5. Database Schemas, Indexing & Caching (MongoDB) (Q35 - Q40)
+6. DevOps, Setup, & Real-time Integrations (Q41 - Q45)
+
+================================================================================
+SECTION 1: GENERAL PROJECT CONCEPT & OBJECTIVES
+================================================================================
+
+❓ Q1: What is the core problem that the "MovieAI" platform solves?
+💡 A1: Traditional movie platforms present a major challenge: "choice paralysis" or "analysis paralysis." With thousands of movies spread across various platforms, users spend excessive time searching instead of watching. Modern platforms also fail to recommend content based on a user's emotional state (mood) or explain *why* a particular movie was recommended.
+MovieAI addresses this by offering:
+- Multi-dimensional recommendations: Content-Based, Mood-Based, and Hybrid-Based.
+- Real-time interaction: Instant updates to lists and watch histories.
+- Interpretability: Plain-language matching reasons (e.g., "Matches your high rating for similar Action films").
+- Gamified engagement: Badges and visual statistics to encourage platform interaction.
+
+---
+
+❓ Q2: What is the high-level architecture of this application?
+💡 A2: The application follows a three-tier, decoupled microservices architecture:
+1. FRONTEND: Built with React.js (Vite) and Vanilla CSS3. It functions as a Single Page Application (SPA) consuming RESTful JSON APIs and interacting via WebSockets.
+2. BACKEND SERVER: Built with Node.js, Express.js, and Mongoose (MongoDB). It manages user authentication (JWT), sessions, movie metadata, ratings, wishlists, and user profiles. It serves as the primary gateway.
+3. ML SERVICE: Built with Python (FastAPI). It handles high-performance data operations, runs the TF-IDF vectorizer and Cosine Similarity models, performs mood-to-genre parsing, and executes the hybrid sorting algorithm.
+
+---
+
+❓ Q3: How do the Node.js server and the Python ML service communicate?
+💡 A3: The communication is HTTP-based and RESTful. When a user requests recommendations (e.g., in `recommendationController.js` on the Node.js backend), the Node.js server acts as an HTTP client using a library like Axios or the native fetch API. It makes a POST request to the Python FastAPI microservice (running on `http://localhost:8000/recommendations`), sending the user's list of liked/watched movie IDs. The ML service processes this data, computes the math, and returns a JSON payload of recommended movies, which the backend then serves back to the client.
+
+---
+
+❓ Q4: What makes the MovieAI recommendation system "hybrid"?
+💡 A4: A standard recommender uses only one signal (e.g., content attributes or collaborative ratings). MovieAI's hybrid algorithm combines multiple signals to balance accuracy and diversity:
+- Content-Based Filtering: Plot description and title text similarity.
+- Collaborative/Rating Boost: Enhances scores for items with higher average ratings (`vote_average`).
+- Popularity Boost: Adjusts recommendations based on general popularity indicators (`popularity`).
+- Language/Demographic Preference: Provides score bonuses if the language matches the user's profile settings.
+By combining these, it avoids standard collaborative filtering drawbacks (like recommending poor-quality movies just because they share keywords) and content-based drawbacks (recommending unpopular or low-rated movies).
+
+---
+
+❓ Q5: What is the "Cold Start Problem," and how does MovieAI mitigate it?
+💡 A5: The cold start problem occurs when a new user joins the platform (no history) or a new movie is added (no reviews/ratings). MovieAI handles this through:
+- User Cold Start: The platform utilizes a interactive Mood Picker. If a user has no historical data, they can pick a mood. The system filters movies by associated genres and sorts them by global popularity, allowing immediate discovery.
+- Item Cold Start: Since the ML model uses Content-Based Filtering (TF-IDF on movie overviews/synopses), a newly added movie can immediately be recommended to users based on its plot description, even if it has zero views or ratings.
+
+---
+
+❓ Q6: How does the system operate without external API keys like TMDB or OpenAI?
+💡 A6: The platform is built to be highly robust and self-sustaining by including localized mock data:
+- Pre-seeded Database: It features a script (`generateMockData.js` / `seed.js`) that creates a rich database of 1000+ detailed movies containing full metadata (genres, cast, overview, release dates, popularity, ratings).
+- Local Fallbacks: In the ML service, if scikit-learn or external model dependencies are missing, the system utilizes a pure Python fallback (Jaccard similarity on keywords and overview tokens) so that recommendations never break.
+- Mock AI Explanations: The hybrid model generates human-like recommendation justifications (e.g., "Aligns with your preference for 2024 cinema aesthetics") using template-based randomization, delivering a high-fidelity user experience without incurring OpenAI API charges.
+
+---
+
+❓ Q7: What are the target metrics used to evaluate a recommendation engine like this?
+💡 A7: In a production system, three primary metrics are used:
+1. Precision@K: The fraction of recommended movies in the top K results that are actually relevant to the user (e.g., they click or add them to their wishlist).
+2. Recall@K: The fraction of all relevant movies that the system successfully suggested in the top K.
+3. RMSE (Root Mean Squared Error): Measures the difference between predicted ratings and actual user ratings.
+For MovieAI, we optimize the ranking by computing a confidence score, aiming to maximize Precision@K to ensure that the top 5 suggested movies are highly relevant.
+
+---
+
+❓ Q8: What gamification elements are present in the platform?
+💡 A8: MovieAI incorporates an achievement and badge system. Based on user behavior (e.g., number of movies rated, logging in consecutively, completing their profile, or adding movies to the wishlist), the backend triggers achievement rules and assigns badges (stored in the `badges` schema). Users can view these achievements on their profile dashboard, which increases retention and encourages active participation.
+
+================================================================================
+SECTION 2: FRONTEND ARCHITECTURE (REACT.JS & CSS3 STYLING)
+================================================================================
+
+❓ Q9: Why was React.js + Vite chosen over traditional React frameworks?
+💡 A9: React.js offers a component-driven, virtual DOM architecture that is perfect for highly interactive, state-heavy dashboards. 
+Vite was chosen as the build tool because:
+- Near-instant server start times via ES module imports.
+- Extremely fast Hot Module Replacement (HMR) for rapid development.
+- Optimized production builds using Rollup, resulting in smaller bundle sizes and faster load times than standard Create React App (Webpack).
+
+---
+
+❓ Q10: How is state managed in the frontend client application?
+💡 A10: The client maintains state using a combination of:
+- Global State: Managed via Redux Toolkit (or React Context API) to keep track of user authentication status, active JWT tokens, and user profile information.
+- Local Component State: Managed via standard React hooks (`useState`, `useReducer`) for UI variables like modal open/close states, active search queries, or temporary form values.
+- Real-time Sync: Handled through Socket.io-client listeners that update the Redux/local state when changes are broadcasted by the backend.
+
+---
+
+❓ Q11: Explain the "Glassmorphism" styling implementation in the CSS files.
+💡 A11: Glassmorphism creates a premium, modern user interface by mimicking frosted glass. It is achieved in CSS (such as `Auth.css` and `Dashboard.css`) using three key properties:
+1. Background with alpha transparency: `background: rgba(255, 255, 255, 0.05);` (or dark equivalents).
+2. Frosted backdrop filter: `backdrop-filter: blur(10px) saturate(180%);` (standardized across modern browsers).
+3. Subtle borders and drop shadows:
+   `border: 1px solid rgba(255, 255, 255, 0.1);`
+   `box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);`
+This creates depth and visual hierarchy in dark mode.
+
+---
+
+❓ Q12: How are the visual charts on the User Dashboard created?
+💡 A12: The charts (visualizing genre preferences, rating distributions, and watch times) are built using `chart.js` integrated via the `react-chartjs-2` wrapper. The dashboard component (`Dashboard.jsx`) fetches the user's rating and watch history, structures it into labels and datasets, and renders interactive, responsive canvas elements (e.g., Pie charts, Bar charts, or Line charts) matching the platform's glassmorphic theme.
+
+---
+
+❓ Q13: Explain how the Mood Picker interface functions.
+💡 A13: The Mood Picker is a visual, interactive grid where users select their current state (e.g., "Inspired", "Scared", "Happy", "Romantic"). 
+1. Clicking a mood captures the string.
+2. The component sends a request to `/api/v1/recommendations/mood?mood={selectedMood}`.
+3. The UI renders a carousel or grid of highly responsive cards showing the recommendations, customized with a theme color and description matching that specific mood.
+
+---
+
+❓ Q14: How does the video trailer popup work on the Movie Detail page?
+💡 A14: The `MovieDetail.jsx` component displays detailed metadata (cast, director, budget, ratings). It contains a "Play Trailer" button. Clicking this triggers a modal containing an `<iframe>` player referencing a YouTube embed link (derived from the movie's TMDB trailer code). It uses auto-play properties and includes robust error-handling (rendering a sleek backup poster or warning if no video source is available).
+
+---
+
+❓ Q15: How does the frontend handle responsive layouts across mobile, tablet, and desktop?
+💡 A15: The client uses a Mobile-First styling approach utilizing CSS Flexbox and Grid. Flex-wrap and fractional grid columns (`grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));`) dynamically resize the movie cards. Media queries (`@media (max-width: 768px)`) adapt navigation sidebars into mobile drawer overlays, ensuring a cinema-quality layout on all screen sizes.
+
+================================================================================
+SECTION 3: BACKEND SERVER & API SECURITY
+================================================================================
+
+❓ Q16: How is user authentication implemented securely?
+💡 A16: Authentication is token-based using JSON Web Tokens (JWT):
+1. Upon logging in via `/api/v1/auth/login`, the credentials are validated against the database.
+2. If valid, a JWT payload containing the user's ID and role (`admin`/`user`) is generated and signed with a strong secret key.
+3. The token is sent to the client via an HTTP-Only, Secure, and SameSite cookie (`token`). This protects it from Cross-Site Scripting (XSS) attacks since client-side JavaScript cannot access HTTP-Only cookies.
+
+---
+
+❓ Q17: What security headers are applied, and how do they protect the API?
+💡 A17: The server utilizes the `helmet` middleware. Helmet sets security-related HTTP response headers such as:
+- `Content-Security-Policy (CSP)`: Restricts where resources (scripts, styles, images) can be loaded from.
+- `X-Frame-Options`: Set to `SAMEORIGIN` to prevent Clickjacking attacks.
+- `Strict-Transport-Security (HSTS)`: Enforces secure (HTTPS) connections.
+- `X-Content-Type-Options`: Set to `nosniff` to prevent MIME-type sniffing.
+
+---
+
+❓ Q18: Explain the Role-Based Access Control (RBAC) middleware implementation.
+💡 A18: RBAC is implemented using a custom Express middleware (often called `authorizeRoles` or `checkRole`).
+Here is an example structure:
+```javascript
+const authorizeRoles = (...allowedRoles) => {
+  return (req, res, next) => {
+    // req.user is populated by the authentication middleware
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `Role (${req.user?.role}) is not allowed to access this resource`
+      });
+    }
+    next();
+  };
+};
+```
+This is used in `adminRoutes.js` (e.g., `router.get('/stats', isAuthenticated, authorizeRoles('admin'), getSystemStats)`), blocking standard users from calling administrative endpoints.
+
+---
+
+❓ Q19: What is the purpose of the `express-async-errors` library used in `app.js`?
+💡 A19: In traditional Express 4 applications, if an asynchronous route handler (using `async/await`) throws an error, you must explicitly pass it to `next(err)` to prevent the server from crashing or hanging.
+`require('express-async-errors')` automatically catches thrown errors in async route controllers and forwards them to the global Express error-handling middleware, making the code much cleaner and eliminating boilerplates.
+
+---
+
+❓ Q20: How does the global error-handling middleware function?
+💡 A20: Located in `server/src/middleware/errorHandler.js`, it intercepts all errors that bubble up from routes. It formats them into a structured JSON response:
+- Mongoose ValidationError: Extracts specific field errors and returns a `400 Bad Request`.
+- Mongoose Duplicate Key (Code 11000): Translates this into a clean user-friendly message (e.g., "Email already exists") and returns a `400 Bad Request`.
+- JsonWebTokenError / TokenExpiredError: Catches bad signatures or expired logins, returning a `401 Unauthorized` status.
+- Standard Errors: Formats the stack trace (only in development mode) and returns a `500 Internal Server Error`.
+
+---
+
+❓ Q21: How are WebSockets integrated with Express, and what are they used for?
+💡 A21: WebSockets are initialized via Socket.io inside `server/src/socket/socketManager.js`.
+1. The Express server is wrapped in a native Node HTTP server: `http.createServer(app)`.
+2. Socket.io is bound to this combined server.
+3. WebSockets are used for:
+   - Real-time Wishlist Syncing: When a user adds a movie to their wishlist on one tab/device, the update is instantly synced.
+   - Interactive Chatbot Messaging: Users chat with the AI chatbot, and messages are sent/received in real-time.
+   - Admin Notifications: Pushes live user activity metrics or logs directly to the Admin Dashboard.
+
+---
+
+❓ Q22: What compression middleware is active, and why?
+💡 A22: The server uses the `compression` middleware, which compresses response bodies using Gzip or Deflate algorithms before sending them to the client. This significantly reduces payload sizes for large JSON payloads (such as sending a list of 100 movies), saving network bandwidth and accelerating page rendering.
+
+---
+
+❓ Q23: Why does the system support dynamic seeding, and what does it seed?
+💡 A23: In academic settings, setting up external databases or fetching raw APIs causes pipeline failures. The project provides `seed.js` to ensure immediate operations. It populates:
+1. Users: Standard users and pre-configured Admin accounts.
+2. Movies: 1000+ movies complete with title, overview, genres, release dates, runtime, popularity, and poster path structures.
+3. Ratings & History: Interactive simulated ratings to pre-train the collaborative algorithms.
+
+---
+
+❓ Q24: What is CORS, and how is it configured in the Node server?
+💡 A24: CORS (Cross-Origin Resource Sharing) is a browser security mechanism that restricts resources on a webpage from being requested from another domain.
+In `app.js`, CORS is configured to allow requests from the client's origin (default `http://localhost:5173`) while enabling `credentials: true`. This allows the browser to send cookies (including the JWT token) in cross-origin HTTP requests.
+
+================================================================================
+SECTION 4: MACHINE LEARNING & RECOMMENDATION MATHEMATICS (PYTHON & FASTAPI)
+================================================================================
+
+❓ Q25: Why was FastAPI chosen for the ML Service over Flask or Django?
+💡 A25: FastAPI offers several key advantages for ML microservices:
+- Performance: Built on Starlette and Uvicorn, FastAPI is one of the fastest Python frameworks available, rivaling Node.js and Go.
+- Asynchronous Support: Native support for `async` and `await`, allowing high-concurrency requests without blocking the thread pool.
+- Automatic Documentation: Automatically generates interactive OpenAPI docs (`/docs` using Swagger UI) from standard Python type hints.
+- Data Validation: Integrates Pydantic for automated request schema validation and descriptive serialization errors.
+
+---
+
+❓ Q26: Explain the "lifespan" event handler in the FastAPI app.
+💡 A26: Implemented in `main.py` using `contextlib.asynccontextmanager`, the `lifespan` handler defines code that runs *before* the application starts receiving requests and *after* the application shuts down.
+During startup, it calls `load_movies_cache()`, which fetches all movies from the MongoDB instance and stores them in RAM. This ensures that recommendation calculations (like TF-IDF matrix transformations) do not suffer from database latency during active HTTP requests.
+
+---
+
+❓ Q27: How does Content-Based Filtering work under the hood using TF-IDF?
+💡 A27: Content-Based Filtering models recommendation as a text-similarity search:
+1. Features are extracted from each movie by combining the `title` and `overview` (plot) text.
+2. A Term Frequency-Inverse Document Frequency (TF-IDF) Vectorizer transforms these text paragraphs into mathematical vectors.
+3. The similarity between vectors is calculated. If a user liked movie A, we return the movies with the highest similarity score.
+
+---
+
+❓ Q28: What is the mathematical definition of TF-IDF?
+💡 A28: TF-IDF evaluates how important a word is to a document in a collection. It is the product of two statistics:
+1. Term Frequency (TF): Measures how frequently a term $t$ occurs in a document $d$:
+   $$TF(t, d) = \frac{\text{Number of times term } t \text{ appears in document } d}{\text{Total number of terms in document } d}$$
+
+2. Inverse Document Frequency (IDF): Measures how important a term is across all $N$ documents in the corpus. Rare terms get higher weights:
+   $$IDF(t) = \log\left(\frac{N}{1 + |\{d \in D : t \in d\}|}\right)$$
+
+3. Combining them:
+   $$TF\text{-}IDF(t, d) = TF(t, d) \times IDF(t)$$
+This down-weights common stop words (like "the", "a", "is") and emphasizes highly descriptive plot keywords (e.g., "spaceship", "detective", "wizard").
+
+---
+
+❓ Q29: What is the math formula for Cosine Similarity? How is it implemented?
+💡 A29: Cosine similarity measures the cosine of the angle between two multi-dimensional vectors $A$ and $B$. It assesses orientation rather than magnitude:
+$$\text{Cosine Similarity}(A, B) = \cos(\theta) = \frac{A \cdot B}{\|A\| \|B\|} = \frac{\sum_{i=1}^n A_i B_i}{\sqrt{\sum_{i=1}^n A_i^2} \sqrt{\sum_{i=1}^n B_i^2}}$$
+In Python, this is calculated using scikit-learn's `linear_kernel` or `cosine_similarity`. Because TF-IDF vectors generated by `TfidfVectorizer` are L2-normalized, their magnitude ($\|A\|$ and $\|B\|$) is exactly 1.
+Therefore, the denominator is $1 \times 1 = 1$, and the cosine similarity simplifies to the dot product of the vectors ($A \cdot B$), which `linear_kernel` calculates extremely fast.
+
+---
+
+❓ Q30: How is Jaccard Similarity used as a pure Python fallback?
+💡 A30: If scikit-learn is unavailable, the ML service falls back to a pure Python implementation using Jaccard Similarity.
+Jaccard Similarity measures the ratio of the intersection size to the union size of two sets of words:
+$$J(S_1, S_2) = \frac{|S_1 \cap S_2|}{|S_1 \cup S_2|}$$
+- $S_1$ is the set of unique words in Movie A's title + plot.
+- $S_2$ is the set of unique words in Movie B's title + plot.
+If there are no overlapping words, the score is 0. If they have identical vocabularies, the score is 1. This fallback ensures the system is resilient and doesn't crash if dependencies fail to load.
+
+---
+
+❓ Q31: Detail the "Mood to Genre" mapping logic.
+💡 A31: Moods are mapped to TMDb genre IDs in `mood_analyzer.py`:
+- `happy`: Comedy (35), Music (10402), Animation (16), Family (10751)
+- `sad`: Drama (18), Romance (10749)
+- `excited`: Action (28), Adventure (12), Sci-Fi (878), Thriller (53)
+- `scared`: Horror (27), Thriller (53), Mystery (9648)
+- `romantic`: Romance (10749), Comedy (35), Drama (18)
+- `inspired`: Documentary (99), History (36), Drama (18)
+- `adventurous`: Adventure (12), Action (28), Fantasy (14), Sci-Fi (878)
+- `relaxed`: Comedy (35), Animation (16), Family (10751), Mystery (9648)
+- `angry`: Action (28), Adventure (12), Thriller (53)
+- `nostalgic`: History (36), Documentary (99), Drama (18)
+
+The algorithm filters movies containing at least one corresponding genre ID and calculates a custom score:
+$$\text{Score} = (\text{Genre Overlap} \times 30) + (\text{Vote Average} \times 5) + (\text{Popularity} \times 0.1)$$
+It then sorts the movies and randomly samples from the top candidates to keep the recommendations fresh and dynamic.
+
+---
+
+❓ Q32: Explain the math behind the Hybrid Recommendation scoring.
+💡 A32: The Hybrid algorithm (`hybrid.py`) aggregates plot text similarity with popularity and user preference vectors:
+1. It fetches candidate movies via Content-Based similarity (generating a content `matchScore`).
+2. It loops through these candidate movies and calculates a `hybridScore`:
+   $$\text{HybridScore} = \text{matchScore} + \text{PopularityBonus} + \text{RatingBonus} + \text{LanguageBonus}$$
+   Where:
+   - $\text{PopularityBonus} = \min\left(\frac{\text{popularity}}{1000}, 10\right)$ (capped at 10 to prevent mega-popular blockbusters from dominating recommendations).
+   - $\text{RatingBonus} = \text{vote\_average}$ (directly adding the rating, typically scaled out of 10).
+   - $\text{LanguageBonus} = 5.0$ if the movie language is listed in the user's language preferences.
+3. The candidate movies are then sorted by this unified `hybridScore`.
+
+---
+
+❓ Q33: How does the system compute a "Match Confidence Score" and generate match reasons?
+💡 A33: 
+- Confidence Score: Measures the system's certainty in its recommendation. It combines content similarity and movie ratings, capped at 98%:
+  $$\text{Confidence} = \min\left(\text{matchScore} + (\text{vote\_average} \times 3), 98.0\right)$$
+- AI-Generated Match Reasons: The service simulates conversational, GPT-4 style reasoning by analyzing the match signals (e.g., checking if the language, release year, or genres align with the user's profile settings) and dynamically formatting a reason, such as:
+  *"Matches your high rating for similar Romance films."* or *"Aligns with your preference for 2024 cinema aesthetics."*
+
+---
+
+❓ Q34: What data preprocessing takes place before running the TF-IDF Vectorizer?
+💡 A34: Inside the content-based recommender, the plot descriptions and titles are joined together into a single string. 
+During vectorization, `TfidfVectorizer` performs the following steps:
+1. Lowercasing: Converts all characters to lowercase.
+2. Tokenization: Splits paragraphs into individual words (tokens).
+3. Stop-Word Removal: Filters out extremely common English words (such as "the", "and", "in").
+4. Vector Transformation: Computes term frequencies and document frequencies, compiling a high-dimensional sparse matrix.
+
+================================================================================
+SECTION 4: DATABASE SCHEMAS, INDEXING & CACHING (MONGODB)
+================================================================================
+
+❓ Q35: Why was MongoDB chosen over traditional relational SQL databases?
+💡 A35: MongoDB's document-oriented JSON schema is ideal for movie data:
+- Flexible Schema: Movie records vary significantly (e.g., some have trailers, others don't; some have multi-language casting credits, others have basic profiles). MongoDB handles this natively without complex table joins.
+- Scalability: Excellent horizontal partitioning (sharding) for handling millions of rating transactions.
+- Developer Velocity: Mongoose maps MongoDB JSON documents directly to JavaScript objects, matching the MERN tech stack.
+
+---
+
+❓ Q36: Describe the User Schema (`User.js`).
+💡 A36: The User schema holds credentials, metadata, and core preferences:
+- `name`: String, required.
+- `email`: String, required, unique, lowercased, and validated.
+- `password`: String, required (hashed using bcrypt before saving).
+- `role`: String, enum: `['user', 'admin']`, defaults to `'user'`.
+- `preferences`: Object containing:
+  - `genres`: Array of Strings (user's preferred genres).
+  - `languages`: Array of Strings (user's preferred languages, e.g., `['en', 'hi']`).
+- `badges`: Array of ObjectIDs referencing the Badge collection.
+- `createdAt`: Date, defaults to `Date.now`.
+
+---
+
+❓ Q37: Describe the Movie Schema (`Movie.js`).
+💡 A37: The Movie schema stores the rich catalog used by the recommenders:
+- `id`: Number, unique, required (maps directly to TMDb catalog IDs).
+- `title`: String, required.
+- `overview`: String (used for TF-IDF plot comparisons).
+- `genres`: Array of Objects, each containing `id` (Number) and `name` (String).
+- `popularity`: Number.
+- `vote_average`: Number.
+- `vote_count`: Number.
+- `release_date`: Date.
+- `poster_path`: String (path to movie poster image).
+- `backdrop_path`: String.
+- `original_language`: String.
+- `cast`: Array of Objects (name, character, profile_path).
+- `director`: String.
+- `trailer_url`: String (YouTube link).
+
+---
+
+❓ Q38: How are the Wishlist, Watch History, and Rating schemas associated with Users?
+💡 A38: Relationships are established using MongoDB ObjectIDs and reference schemas:
+- Wishlist Schema (`Wishlist.js`): Maps a single `userId` (ObjectID ref 'User') to an array of `movies` (ObjectIDs ref 'Movie').
+- WatchHistory Schema (`WatchHistory.js`): Tracks `userId` (ref 'User'), `movieId` (ref 'Movie'), and `watchedAt` (Date), plus progression markers (e.g., watch duration).
+- Rating Schema (`Rating.js`): Binds a `userId` (ref 'User') and `movieId` (ref 'Movie') to a specific `rating` (Number, min 1, max 10) and an optional `review` (String), enforcing a compound unique index to prevent duplicate user ratings.
+
+---
+
+❓ Q39: What indexes are applied in the MongoDB collection, and why are they critical?
+💡 A39: Indexes are applied to fields that are frequently queried, preventing slow linear collection scans:
+1. `User.email`: Unique index for fast lookups during login.
+2. `Movie.id`: Unique index for fast synchronization with external TMDB IDs.
+3. `Rating`: A compound index on `{ userId: 1, movieId: 1 }` with a unique constraint. This ensures a user can only rate a specific movie once, and speeds up queries retrieving a user's entire history of ratings.
+4. General queries: Single or compound indexes are added to fields like `genres.id` and `popularity` to optimize dashboard filters and search queries.
+
+---
+
+❓ Q40: What is the role of caching (like Redis) in this system?
+💡 A40: Although currently stubbed out (in `app.js` line 74) to simplify deployment, a caching layer is critical in production to:
+- Cache recommendations: Generating content-based or hybrid recommendations requires computing high-dimensional vector products. Caching the resulting recommendation JSON arrays under keys like `user:recs:{userId}` avoids recalculating them on every page refresh.
+- Cache global directories: Storing the top 100 global trending movies reduces database lookups.
+- Caching sessions: Minimizes JWT verification read overhead.
+
+================================================================================
+SECTION 5: DEVOPS, SETUP, & REAL-TIME INTEGRATIONS
+================================================================================
+
+❓ Q41: How do you start the complete multi-service application locally?
+💡 A41: To start the application, open three separate terminal windows and run:
+1. Backend Server:
+   `cd server && npm run dev` (runs Express on `http://localhost:5000`)
+2. ML Service:
+   `cd ml-service && uvicorn app.main:app --reload --port 8000` (runs FastAPI on `http://localhost:8000`)
+3. Frontend Client:
+   `cd client && npm run dev` (runs Vite on `http://localhost:5173`)
+Ensure MongoDB is running locally on its default port (`27017`).
+
+---
+
+❓ Q42: What environment variables are required to configure the system?
+💡 A42: 
+- Backend (`server/.env`):
+  - `PORT`: Port number (e.g., `5000`).
+  - `MONGO_URI`: MongoDB connection string (e.g., `mongodb://localhost:27017/movieai`).
+  - `JWT_SECRET`: A secure random string used to sign auth tokens.
+  - `CLIENT_URL`: The frontend address (e.g., `http://localhost:5173`) for CORS configuration.
+- ML Service (`ml-service/.env`):
+  - `MONGO_URI`: MongoDB connection string for direct startup cache loading.
+  - `PORT`: Port number (e.g., `8000`).
+
+---
+
+❓ Q43: How is the Interactive Chatbot implemented?
+💡 A43: The chatbot is built using a combination of WebSockets and dynamic response routing:
+1. When a user sends a chat message (in `Chatbot.jsx`), it is sent via WebSockets or POST requests to `/api/v1/chatbot`.
+2. The `chatbotController.js` logs the message in the `ChatMessage` collection to maintain chat history.
+3. The chatbot controller analyzes keywords (e.g., "sad", "action", "recommend") to understand user intent.
+4. If a recommendation request is detected, it queries the ML service or recommendation route to fetch personalized suggestions, formats them into a clean chat response, and sends them back to the user.
+
+---
+
+❓ Q44: What are the administrative features in the Admin Dashboard?
+💡 A44: The Admin Dashboard (`AdminDashboard.jsx`) provides system monitoring and administrative tools:
+- User Management: Lists users, displaying their register date, activity count, and roles.
+- Role Toggling: Admins can toggle other users' roles between `user` and `admin` in real-time.
+- System Statistics: Displays high-level system indicators (total users, total ratings, active movie count).
+- Data Operations: Provides options to re-seed data or rebuild recommendation models if the database gets corrupted.
+
+---
+
+❓ Q45: How does the platform handle edge cases like broken movie posters?
+💡 A45: Movie posters are rendered dynamically using paths from TMDb or local assets. If an image fails to load (due to network drops or broken URLs), the React components (e.g., in `MovieDetail.jsx` and home grids) catch the error using the `onError` event handler:
+```javascript
+const handleImageError = (e) => {
+  e.target.onerror = null; // Prevents infinite loops
+  e.target.src = '/fallback-poster.png'; // Sets a clean backup placeholder
+};
+```
+This ensures that the UI always displays a professional, high-fidelity card layout.
+
+================================================================================
+                          END OF VIVA Q&A HANDBOOK
+================================================================================

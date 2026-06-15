@@ -1,0 +1,266 @@
+{
+  "upcoming": [
+    {
+      "tmdbId": 1061474,
+      "title": "Superman",
+      "overview": "Superman, a young reporter in Metropolis, embarks on a journey to reconcile his Kryptonian heritage with his human upbringing as Clark Kent.",
+      "genres": [
+        "Action",
+        "Sci-Fi",
+        "Adventure"
+      ],
+      "releaseYear": 2025,
+      "releaseDate": "2025-07-11",
+      "runtime": 145,
+      "tmdbRating": 0,
+      "director": "James Gunn",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BOGMwZGJiM2EtMzEwZC00YTYzLWIxNzYtMmJmZWNlZjgxZTMwXkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BOGMwZGJiM2EtMzEwZC00YTYzLWIxNzYtMmJmZWNlZjgxZTMwXkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "u9Mv98Gr5pY"
+    },
+    {
+      "tmdbId": 1003596,
+      "title": "Avengers: Doomsday",
+      "overview": "The Avengers assemble once again to face an unprecedented threat from the multiverse as Victor von Doom emerges to reshape reality.",
+      "genres": [
+        "Action",
+        "Sci-Fi",
+        "Adventure"
+      ],
+      "releaseYear": 2026,
+      "releaseDate": "2026-05-01",
+      "runtime": 160,
+      "tmdbRating": 0,
+      "director": "Anthony Russo, Joe Russo",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BM2E1ZTJiZTgtZGI2Zi00MzAxLThhZjktMmU3M2E3Yzk3NjUxXkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BM2E1ZTJiZTgtZGI2Zi00MzAxLThhZjktMmU3M2E3Yzk3NjUxXkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "dQw4w9WgXcQ"
+    },
+    {
+      "tmdbId": 1241982,
+      "title": "Moana 2",
+      "overview": "After receiving an unexpected call from her wayfinding ancestors, Moana must journey to the far seas of Oceania and into dangerous, long-lost waters.",
+      "genres": [
+        "Animation",
+        "Family",
+        "Adventure",
+        "Comedy"
+      ],
+      "releaseYear": 2024,
+      "releaseDate": "2024-11-27",
+      "runtime": 100,
+      "tmdbRating": 7.2,
+      "director": "David Derrick Jr.",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BZDUxNThhYTUtYjgxNy00MGQ4LTgzOTEtZjg1YTU5NTcwNThlXkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BZDUxNThhYTUtYjgxNy00MGQ4LTgzOTEtZjg1YTU5NTcwNThlXkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "hEZ7pL2Nl2k"
+    },
+    {
+      "tmdbId": 911916,
+      "title": "Spider-Man: Beyond the Spider-Verse",
+      "overview": "Miles Morales embarks on his final multiverse adventure to save his father and stop the Spot from destroying the multiverse.",
+      "genres": [
+        "Animation",
+        "Action",
+        "Adventure",
+        "Sci-Fi"
+      ],
+      "releaseYear": 2026,
+      "releaseDate": "2026-06-03",
+      "runtime": 140,
+      "tmdbRating": 0,
+      "director": "Joaquim Dos Santos",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BYjkwOWViYzYtMDQzNi00N2U0LWIxYTktNWE2ZDYyM2FhN2M5XkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BYjkwOWViYzYtMDQzNi00N2U0LWIxYTktNWE2ZDYyM2FhN2M5XkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "YoHD9XEInc0"
+    },
+    {
+      "tmdbId": 617126,
+      "title": "Fantastic Four: First Steps",
+      "overview": "Set against the vibrant backdrop of a 1960s retro-futuristic world, Marvel's First Family faces their biggest challenge yet in Galactus.",
+      "genres": [
+        "Action",
+        "Sci-Fi",
+        "Adventure"
+      ],
+      "releaseYear": 2025,
+      "releaseDate": "2025-07-25",
+      "runtime": 130,
+      "tmdbRating": 0,
+      "director": "Matt Shakman",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BOGM5MzA3MDAtYmEwMi00ZDNiLTg4MDgtMTZjOTc0ZGMyNTIwXkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BOGM5MzA3MDAtYmEwMi00ZDNiLTg4MDgtMTZjOTc0ZGMyNTIwXkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "dQw4w9WgXcQ"
+    },
+    {
+      "tmdbId": 83533,
+      "title": "Avatar: Fire and Ash",
+      "overview": "Jake Sully and Neytiri encounter a new, aggressive clan of Na'vi known as the 'Ash People', challenging their strength and unity.",
+      "genres": [
+        "Sci-Fi",
+        "Adventure",
+        "Action"
+      ],
+      "releaseYear": 2025,
+      "releaseDate": "2025-12-19",
+      "runtime": 170,
+      "tmdbRating": 0,
+      "director": "James Cameron",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BZDYxY2I1OGMtN2Y4MS00ZmU1LTgyNDAtODA0MzAyYjI0N2Y2XkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BZDYxY2I1OGMtN2Y4MS00ZmU1LTgyNDAtODA0MzAyYjI0N2Y2XkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "Way9Dexny3w"
+    },
+    {
+      "tmdbId": 1234821,
+      "title": "Jurassic World Rebirth",
+      "overview": "A skilled team racing to secure DNA samples from the three most colossal creatures left on land, water, and air.",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Sci-Fi"
+      ],
+      "releaseYear": 2025,
+      "releaseDate": "2025-07-02",
+      "runtime": 125,
+      "tmdbRating": 0,
+      "director": "Gareth Edwards",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BNjg2NTcwYWQtYzk4NS00MTJhLWEzZjItMzIxNjk3YzlkYzU0XkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BNjg2NTcwYWQtYzk4NS00MTJhLWEzZjItMzIxNjk3YzlkYzU0XkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "EXeTwQWrcwY"
+    },
+    {
+      "tmdbId": 402431,
+      "title": "Wicked",
+      "overview": "Elphaba, a misunderstood young woman born with unusual green skin, and Glinda, a popular blonde, form an unlikely friendship at Shiz University.",
+      "genres": [
+        "Fantasy",
+        "Romance",
+        "Drama",
+        "Music"
+      ],
+      "releaseYear": 2024,
+      "releaseDate": "2024-11-22",
+      "runtime": 160,
+      "tmdbRating": 7.8,
+      "director": "Jon M. Chu",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BOWMwYjYzYmMtMWQ2Ni00NWUwLTg2MzAtYzkzMDBiZDIwOTMwXkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BOWMwYjYzYmMtMWQ2Ni00NWUwLTg2MzAtYzkzMDBiZDIwOTMwXkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "WDkg3h8PCVU"
+    },
+    {
+      "tmdbId": 414906,
+      "title": "The Batman Part II",
+      "overview": "Bruce Wayne's crusade continues as Gotham City struggles to rebuild from the flood, and new adversaries emerge from the shadows.",
+      "genres": [
+        "Action",
+        "Crime",
+        "Thriller",
+        "Drama"
+      ],
+      "releaseYear": 2026,
+      "releaseDate": "2026-10-02",
+      "runtime": 165,
+      "tmdbRating": 0,
+      "director": "Matt Reeves",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BMDlkYmJlNmEtMjg5NC00MTk2LThiOGYtYTAyZGI5ZGRjMDA2XkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BMDlkYmJlNmEtMjg5NC00MTk2LThiOGYtYTAyZGI5ZGRjMDA2XkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "EXeTwQWrcwY"
+    },
+    {
+      "tmdbId": 950387,
+      "title": "A Minecraft Movie",
+      "overview": "The malevolent Ender Dragon sets out on a path of destruction, prompting a group of unlikely adventurers to save the blocky Overworld.",
+      "genres": [
+        "Adventure",
+        "Fantasy",
+        "Comedy",
+        "Family"
+      ],
+      "releaseYear": 2025,
+      "releaseDate": "2025-04-04",
+      "runtime": 110,
+      "tmdbRating": 0,
+      "director": "Jared Hess",
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BYzFjMzNjOTktNDBlNy00YWZhLWExYTctZDcxNDA4OWVhOTJjXkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BYzFjMzNjOTktNDBlNy00YWZhLWExYTctZDcxNDA4OWVhOTJjXkEyXkFqcGc@._V1_.jpg",
+      "trailerKey": "fAIX12F6958"
+    }
+  ],
+  "leaving": [
+    {
+      "tmdbId": 27205,
+      "title": "Inception",
+      "overview": "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets, is offered a chance to regain his old life.",
+      "genres": [
+        "Action",
+        "Sci-Fi",
+        "Adventure"
+      ],
+      "releaseYear": 2010,
+      "leavingDate": "In 3 Days",
+      "tmdbRating": 8.5,
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg"
+    },
+    {
+      "tmdbId": 155,
+      "title": "The Dark Knight",
+      "overview": "Batman raises the stakes in his war on crime. With the help of Jim Gordon and Harvey Dent, Batman sets out to dismantle the remaining criminal organizations.",
+      "genres": [
+        "Action",
+        "Crime",
+        "Drama",
+        "Thriller"
+      ],
+      "releaseYear": 2008,
+      "leavingDate": "In 5 Days",
+      "tmdbRating": 9,
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg"
+    },
+    {
+      "tmdbId": 872585,
+      "title": "Oppenheimer",
+      "overview": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II.",
+      "genres": [
+        "Drama",
+        "History"
+      ],
+      "releaseYear": 2023,
+      "leavingDate": "End of Month",
+      "tmdbRating": 8.4,
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BN2JkMDc5MGQtZjg3YS00NmFiLWIyZmQtZTJmNTM5MjVmYTQ4XkEyXkFqcGc@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BN2JkMDc5MGQtZjg3YS00NmFiLWIyZmQtZTJmNTM5MjVmYTQ4XkEyXkFqcGc@._V1_.jpg"
+    },
+    {
+      "tmdbId": 781732,
+      "title": "Animal",
+      "overview": "A father-son bond carved in blood. The story follows a son's obsessive love for his father and the lengths he goes to protect him.",
+      "genres": [
+        "Action",
+        "Drama",
+        "Crime"
+      ],
+      "releaseYear": 2023,
+      "leavingDate": "In 24 Hours",
+      "tmdbRating": 6.3,
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BNGViM2M4NmUtMmNkNy00MTQ5LTk5MDYtNmNhODAzODkwOTJlXkEyXkFqcGdeQXVyMTY1NDY4NTIw._V1_FMjpg_UX1000_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BNGViM2M4NmUtMmNkNy00MTQ5LTk5MDYtNmNhODAzODkwOTJlXkEyXkFqcGdeQXVyMTY1NDY4NTIw._V1_FMjpg_UX1000_.jpg"
+    },
+    {
+      "tmdbId": 424783,
+      "title": "Bumblebee",
+      "overview": "On the run in the year 1987, Bumblebee finds refuge in a junkyard in a small Californian beach town where Charlie discovers him.",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Science Fiction"
+      ],
+      "releaseYear": 2018,
+      "leavingDate": "In 4 Days",
+      "tmdbRating": 7,
+      "posterPath": "https://m.media-amazon.com/images/M/MV5BMjUwNjU5NDMyNF5BMl5BanBnXkFtZTgwNzgxNjM2NzM@._V1_.jpg",
+      "backdropPath": "https://m.media-amazon.com/images/M/MV5BMjUwNjU5NDMyNF5BMl5BanBnXkFtZTgwNzgxNjM2NzM@._V1_.jpg"
+    }
+  ]
+}

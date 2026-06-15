@@ -1,0 +1,45 @@
+Email: admin@movieai.com
+Password: Admin@123
+
+Creating new admin user...
+Admin account created successfully!
+--- ADMIN CREDENTIALS ---
+Email: admin@movieai.com
+Password: AdminPassword123!
+--------------------------
+
+PS C:\Users\ASUS\OneDrive\Desktop\Movie R\server> Stop-Process -Id (Get-NetTCPConnection -LocalPort 5000).OwningProcess -Force
+>>
+PS C:\Users\ASUS\OneDrive\Desktop\Movie R\server> npm run dev
+>>
+
+The Gamification System is one of the most engaging parts of MovieAI. It turns your movie-watching journey into a rewarding experience. Here is a breakdown of exactly how it is implemented and how it works:
+
+1. The Points System (XP)
+We have built a real-time tracking engine in the backend that rewards you for every interaction:
+
+🎬 Watching a Movie: Every time a movie is added to your history, you earn +10 Points.
+⭐ Rating a Movie: For every movie you rate, you earn +5 Points.
+🧠 AI Interactions: Using the mood discovery or chatbot also contributes to your engagement level.
+2. Milestone Badges
+The system uses a dedicated Badge Model to track your achievements. Once you hit specific milestones, a badge is unlocked and pinned to your profile:
+
+First Watch: Awarded for your very first movie entry.
+Critic: Awarded after you rate your first 10 movies.
+Genre Explorer: Awarded when you watch movies across 5 different genres.
+Binge Watcher: Triggered by high activity within a short timeframe.
+3. User Analytics Dashboard
+Your points and activity aren't just numbers—they are visualized in your Analytics Dashboard:
+
+Genre Distribution: A Doughnut chart shows you which types of movies you love most based on your history.
+Engagement Timeline: A Bar chart tracks your weekly watch activity.
+Stats Cards: You can instantly see your "Total Points," "Total Ratings," and "Movies Watched" in premium glass-morphic cards.
+4. Social Leaderboards
+Every user is ranked globally based on their Points (🏆).
+
+In your Dashboard Header, you can see your current total points.
+This data is stored in the database under your User Profile, ensuring that your "Cinema Rank" is permanent and persists every time you log in.
+5. Dynamic Updates via Socket.io
+To make it feel "alive," the system uses WebSockets. When you finish a movie or submit a rating, the server pushes an update to your frontend immediately. This allows your points and badge progress to update without refreshing the page.
+
+In short: Your MovieAI account is essentially a "Cinema RPG" where you level up simply by enjoying movies!

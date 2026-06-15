@@ -1,0 +1,48 @@
+.wishlist-page { padding: 40px 0 80px; position: relative; min-height: 100vh; }
+.wishlist-cover {
+  position: absolute; top: 0; left: 0; right: 0; height: 400px;
+  background-size: cover; background-position: center;
+  filter: blur(20px) brightness(0.3); z-index: 1;
+}
+.wishlist-cover-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent, var(--bg-dark));
+}
+
+.wishlist-header { 
+  display: flex; justify-content: space-between; align-items: flex-end; 
+  margin-bottom: 20px; flex-wrap: wrap; gap: 20px;
+}
+.wishlist-header h1 { font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 900; }
+
+.wishlist-search {
+  background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary);
+  padding: 10px 20px; border-radius: 30px; min-width: 280px;
+  font-family: inherit; transition: var(--transition);
+}
+.wishlist-search:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 15px rgba(108,99,255,0.2); }
+
+.genre-filters { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0 30px; scrollbar-width: none; }
+.genre-filters::-webkit-scrollbar { display: none; }
+.filter-pill {
+  padding: 6px 16px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 20px; font-size: 0.85rem; color: var(--text-secondary);
+  cursor: pointer; transition: var(--transition); white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--accent); color: #fff; }
+.filter-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: var(--shadow); }
+
+.wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+.wishlist-item { position: relative; }
+.remove-btn {
+  position: absolute; top: 8px; right: 8px; width: 30px; height: 30px;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); border: none;
+  color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; opacity: 0; transition: var(--transition); z-index: 5;
+}
+.wishlist-item:hover .remove-btn { opacity: 1; }
+.remove-btn:hover { background: #ef4444; transform: scale(1.1); }
+
+.empty-state { text-align: center; padding: 100px 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.empty-state h2 { font-size: 1.5rem; font-weight: 700; }
+.empty-state p { color: var(--text-secondary); }

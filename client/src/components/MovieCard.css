@@ -1,0 +1,85 @@
+.movie-card {
+  cursor: pointer;
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  background: var(--bg-card);
+}
+.movie-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+}
+.movie-card-poster {
+  position: relative;
+  aspect-ratio: 2/3;
+  overflow: hidden;
+}
+.movie-card-poster img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.movie-card:hover .movie-card-poster img { transform: scale(1.06); }
+
+.movie-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding: 16px; gap: 8px;
+  opacity: 0; transition: opacity 0.25s ease;
+}
+.movie-card:hover .movie-card-overlay { opacity: 1; }
+
+.play-btn {
+  background: linear-gradient(135deg, var(--accent), #ff6b9d);
+  border: none; color: #fff; padding: 8px 20px;
+  border-radius: 50px; font-weight: 600; font-size: 0.82rem;
+  transition: transform 0.2s;
+}
+.play-btn:hover { transform: scale(1.05); }
+
+.match-badge {
+  font-size: 0.72rem; font-weight: 800;
+  border-radius: 50px; padding: 2px 10px;
+  backdrop-filter: blur(4px);
+}
+.match-badge.high { background: rgba(16,185,129,0.25); color: #34d399; border: 1px solid #10b981; }
+.match-badge.medium { background: rgba(245,158,11,0.25); color: #fbbf24; border: 1px solid #f59e0b; }
+.match-badge.low { background: rgba(239,68,68,0.25); color: #f87171; border: 1px solid #ef4444; }
+
+.match-type-tag {
+  font-size: 0.65rem; color: rgba(255,255,255,0.7);
+  font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.rating-badge {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(0,0,0,0.75); color: var(--gold);
+  font-size: 0.75rem; font-weight: 700;
+  padding: 4px 8px; border-radius: 50px;
+  backdrop-filter: blur(8px);
+}
+.movie-card-info {
+  padding: 10px 12px 12px;
+}
+.movie-card-title {
+  font-size: 0.88rem; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 4px; color: var(--text-primary);
+}
+.movie-card-meta {
+  font-size: 0.76rem; color: var(--text-secondary);
+}
+
+.leaving-badge {
+  position: absolute; top: 10px; left: 10px;
+  background: linear-gradient(135deg, #ff4e50, #f9d423);
+  color: white;
+  font-size: 0.65rem; font-weight: 800;
+  padding: 4px 10px; border-radius: 50px;
+  box-shadow: 0 4px 10px rgba(255, 78, 80, 0.4);
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  z-index: 2;
+}

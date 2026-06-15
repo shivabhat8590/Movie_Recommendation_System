@@ -1,0 +1,95 @@
+version: "3.9"
+
+services:
+  # ── MongoDB ──────────────────────────────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: movieai_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - movieai_net
+
+  # ── Redis ─────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: movieai_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - movieai_net
+
+  # ── Node.js API Server ────────────────────────────────────────
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: movieai_server
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/movie_recommendation
+      - REDIS_URL=redis://redis:6379
+      - ML_SERVICE_URL=http://ml-service:8000
+    depends_on:
+      - mongo
+      - redis
+      - ml-service
+    networks:
+      - movieai_net
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
+  # ── Python FastAPI ML Service ─────────────────────────────────
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: movieai_ml
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/movie_recommendation
+    depends_on:
+      - mongo
+    networks:
+      - movieai_net
+    volumes:
+      - ./ml-service:/app
+      - ml_models:/app/app/data/models
+
+  # ── React Frontend ────────────────────────────────────────────
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: movieai_client
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - movieai_net
+
+volumes:
+  mongo_data:
+  redis_data:
+  ml_models:
+
+networks:
+  movieai_net:
+    driver: bridge
