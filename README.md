@@ -30,9 +30,9 @@ npm run dev
 ---
 
 ## 👤 Login Credentials
-The system is pre-seeded with an admin account:
-- **Email**: `admin@movieai.com`
-- **Password**: `Admin@123`
+The system is pre-seeded with an user account:
+- **Email**: `test@movieai.com`
+- **Password**: `test@123`
 
 ---
 
