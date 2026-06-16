@@ -13,6 +13,8 @@ import Dashboard from './pages/Dashboard';
 import Chatbot from './pages/Chatbot';
 import Wishlist from './pages/Wishlist';
 import AdminDashboard from './pages/AdminDashboard';
+import UserReport from './pages/UserReport';
+import AdminCredentials from './pages/AdminCredentials';
 import Toast from './components/Toast';
 
 function ProtectedRoute({ children }) {
@@ -64,6 +66,8 @@ export default function App() {
         <Route path="/chatbot" element={<ProtectedRoute><Chatbot /></ProtectedRoute>} />
         <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/admin/users/:userId/report" element={<ProtectedRoute><UserReport /></ProtectedRoute>} />
+        <Route path="/admin/credentials" element={<ProtectedRoute><AdminCredentials /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toast />

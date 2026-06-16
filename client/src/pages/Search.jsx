@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { searchMovies } from '../store/moviesSlice';
 import MovieCard from '../components/MovieCard';
 import { isMovieKidFriendly } from '../utils/movieHelpers';
+import api from '../services/api';
 import './Search.css';
 
 export default function Search() {
@@ -14,7 +15,10 @@ export default function Search() {
 
   useEffect(() => {
     const q = searchParams.get('q');
-    if (q) dispatch(searchMovies({ q }));
+    if (q) {
+      dispatch(searchMovies({ q }));
+      api.post('/activities/log', { activityType: 'search_perform', metadata: { searchQuery: q } }).catch(() => {});
+    }
   }, [searchParams.get('q')]);
 
   const handleSearch = (e) => {

@@ -1,6 +1,7 @@
 const ChatMessage = require('../models/ChatMessage');
 const openai = require('../services/openaiService');
 const tmdb = require('../services/tmdbService');
+const ActivityLog = require('../models/ActivityLog');
 
 // POST /api/v1/chatbot/message
 const sendMessage = async (req, res) => {
@@ -19,6 +20,15 @@ const sendMessage = async (req, res) => {
     role: 'user',
     content: message.trim(),
   });
+
+  // Log Activity
+  await ActivityLog.create({
+    userId: req.user._id,
+    activityType: 'chatbot_conversation',
+    metadata: {
+      chatMessage: message.trim()
+    }
+  }).catch(err => console.error('Failed to log chatbot_conversation activity:', err));
 
   // Get recent conversation history (last 10 messages for context)
   const history = await ChatMessage.find({ user: req.user._id, sessionId: sid })

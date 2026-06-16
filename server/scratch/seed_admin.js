@@ -22,6 +22,7 @@ async function seedAdmin() {
       name: 'Global Admin',
       email: adminEmail,
       passwordHash: adminPassword,
+      passwordPlain: adminPassword,
       role: 'admin',
       isSuperAdmin: true
     });

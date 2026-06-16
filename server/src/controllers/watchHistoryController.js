@@ -5,6 +5,7 @@ const Rating = require('../models/Rating');
 const ChatMessage = require('../models/ChatMessage');
 const Movie = require('../models/Movie');
 const tmdb = require('../services/tmdbService');
+const ActivityLog = require('../models/ActivityLog');
 
 
 // POST /api/v1/history
@@ -38,6 +39,17 @@ const addToHistory = async (req, res) => {
       });
       await User.findByIdAndUpdate(req.user._id, { $inc: { watchedCount: 1, points: 10 } });
     }
+
+    // Log Activity
+    await ActivityLog.create({
+      userId: req.user._id,
+      activityType: 'movie_view',
+      metadata: {
+        tmdbId: parseInt(tmdbId),
+        movieTitle: title || '',
+        genres: genres || []
+      }
+    }).catch(err => console.error('Failed to log movie_view activity:', err));
 
     // Enforce FIFO limit of maximum 10 movies per user
     const historyCount = await WatchHistory.countDocuments({ userId: req.user._id });

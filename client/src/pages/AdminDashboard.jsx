@@ -71,8 +71,15 @@ export default function AdminDashboard() {
     <div className="admin-page page-enter">
       <div className="container">
         <header className="admin-header">
-          <h1>🛡️ Admin Control Panel</h1>
-          <p>Manage users and monitor system health</p>
+          <div className="admin-title-row">
+            <div>
+              <h1>🛡️ Admin Control Panel</h1>
+              <p>Manage users and monitor system health</p>
+            </div>
+            <button className="credentials-view-btn" onClick={() => navigate('/admin/credentials')}>
+              🔑 View User Credentials
+            </button>
+          </div>
         </header>
 
         {/* Stats Grid */}
@@ -146,7 +153,9 @@ export default function AdminDashboard() {
                     </td>
                     <td>
                       <div className="table-actions">
-                        {/* Regular admins can only manage non-admin users */}
+                        <button className="action-btn info" onClick={() => navigate(`/admin/users/${u._id}/report`)}>
+                          Info
+                        </button>
                         {(!u.isSuperAdmin && (u.role !== 'admin' || user.isSuperAdmin)) ? (
                           <>
                             <button className="action-btn" onClick={() => handleToggleActive(u)}>
@@ -160,7 +169,7 @@ export default function AdminDashboard() {
                             <button className="action-btn delete" onClick={() => handleDeleteUser(u._id)}>Delete</button>
                           </>
                         ) : (
-                          <span className="text-muted">Protected</span>
+                          <span className="text-muted" style={{ marginLeft: '8px' }}>Protected</span>
                         )}
                       </div>
                     </td>

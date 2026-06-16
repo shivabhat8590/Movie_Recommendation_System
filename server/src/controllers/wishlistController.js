@@ -1,5 +1,6 @@
 const Wishlist = require('../models/Wishlist');
 const tmdb = require('../services/tmdbService');
+const ActivityLog = require('../models/ActivityLog');
 
 // GET /api/v1/wishlist
 const getWishlist = async (req, res) => {
@@ -53,6 +54,18 @@ const addToWishlist = async (req, res) => {
       tmdbRating: officialMovie?.vote_average || tmdbRating || 0,
       runtime: officialMovie?.runtime || runtime || 0,
     });
+
+    // Log Activity
+    await ActivityLog.create({
+      userId: req.user._id,
+      activityType: 'watchlist_add',
+      metadata: {
+        tmdbId: finalId,
+        movieTitle: item.title,
+        genres: item.genres
+      }
+    }).catch(err => console.error('Failed to log watchlist_add activity:', err));
+
     res.status(201).json({ success: true, message: 'Added to wishlist', data: { item } });
   } catch (err) {
     if (err.code === 11000) {
@@ -83,6 +96,17 @@ const removeFromWishlist = async (req, res) => {
   if (!result) {
     return res.status(404).json({ success: false, message: 'Movie not found in wishlist' });
   }
+
+  // Log Activity
+  await ActivityLog.create({
+    userId: req.user._id,
+    activityType: 'watchlist_remove',
+    metadata: {
+      tmdbId: result.tmdbId,
+      movieTitle: result.title,
+      genres: result.genres || []
+    }
+  }).catch(err => console.error('Failed to log watchlist_remove activity:', err));
 
   res.json({ success: true, message: 'Removed from wishlist' });
 };

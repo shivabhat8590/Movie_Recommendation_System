@@ -505,4 +505,73 @@ Always keep responses natural, human-like, and real-time.`;
   };
 };
 
-module.exports = { generateRecommendationExplanation, chatbotResponse, openaiEnabled };
+const generateUserActivityInsights = async (userData, summaryData, weeklyData, genreData) => {
+  const cacheKey = `gemini:insights:${userData._id}`;
+  const cached = await cache.get(cacheKey);
+  if (cached) return cached;
+
+  const activeGeminiKey = process.env.GEMINI_API_KEY;
+  const isGeminiActive = !!activeGeminiKey && activeGeminiKey !== 'your_gemini_api_key_here';
+
+  const formatString = `User name: ${userData.name}
+Total Movies Viewed: ${summaryData.totalViews}
+Total Movie Clicks: ${summaryData.totalClicks}
+Total Watchlist Additions: ${summaryData.totalWatchlistAdds}
+Total Ratings Submitted: ${summaryData.totalRatings}
+Total Reviews Posted: ${summaryData.totalReviews}
+Total AI Chatbot Interactions: ${summaryData.totalChatbot}
+Most Watched Genre: ${summaryData.mostWatchedGenre}
+Most Viewed Movie: ${summaryData.mostViewedMovie}
+Weekly Engagement (last 7 days counts): ${JSON.stringify(weeklyData)}
+Top Genres: ${JSON.stringify(genreData.topGenres)}
+Genre Distribution: ${JSON.stringify(genreData.distribution)}`;
+
+  const prompt = `You are MovieAI Analytics, a cinematic behavioral analyst. Analyze the following movie streaming service user activity metrics and write a short, highly personalized, premium analysis (3-4 sentences, approximately 100-150 words) detailing:
+1. The user's viewing behavior (e.g. active vs passive, rate of watching).
+2. Genre preferences and recommendation patterns (what kind of content they are drawn to and what we should suggest next).
+3. Engagement level and user activity trends (e.g. peak activity times, chatbot reliance, review posting behavior).
+
+Be professional, encouraging, and clear. Format the response as a single cohesive paragraph. Do not use generic markdown placeholders.
+
+User Metrics:
+${formatString}`;
+
+  // Default fallback text if Gemini is not available
+  const defaultInsights = `Based on our analytics, ${userData.name} is an active member who primarily enjoys ${summaryData.mostWatchedGenre || 'a diverse selection of'} movies. Their high volume of movie views and ratings suggests a highly engaged, hands-on viewing behavior, while their chatbot queries show a strong reliance on AI recommendations to discover new cinema. We recommend tailoring their home feed to prioritize ${summaryData.mostWatchedGenre || 'their favorite'} titles and upcoming releases to maintain their high engagement trend.`;
+
+  if (isGeminiActive) {
+    try {
+      const payload = {
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: prompt }]
+          }
+        ],
+        generationConfig: {
+          maxOutputTokens: 500,
+          temperature: 0.7
+        }
+      };
+
+      const { data } = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        payload,
+        { timeout: 15000 }
+      );
+
+      const replyText = data.candidates?.[0]?.parts?.[0]?.text?.trim();
+      if (replyText) {
+        await cache.set(cacheKey, replyText, 3600 * 2); // cache for 2 hours
+        return replyText;
+      }
+    } catch (err) {
+      console.error('Gemini Insights generation error:', err.response?.data || err.message);
+    }
+  }
+
+  // Fallback if not enabled or error
+  return defaultInsights;
+};
+
+module.exports = { generateRecommendationExplanation, chatbotResponse, openaiEnabled, generateUserActivityInsights };

@@ -23,6 +23,7 @@ const ratingRoutes = require('./routes/ratingRoutes');
 const watchHistoryRoutes = require('./routes/watchHistoryRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const activityRoutes = require('./routes/activityRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -52,6 +53,7 @@ app.use(`${API}/ratings`, ratingRoutes);
 app.use(`${API}/history`, watchHistoryRoutes);
 app.use(`${API}/chatbot`, chatbotRoutes);
 app.use(`${API}/admin`, adminRoutes);
+app.use(`${API}/activities`, activityRoutes);
 
 // --- Health Check ---
 app.get('/health', (req, res) => {

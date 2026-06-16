@@ -37,6 +37,17 @@ export default function MovieDetail() {
         }
         setMovie(m);
         setLoading(false);
+
+        if (user) {
+          api.post('/activities/log', {
+            activityType: 'movie_click',
+            metadata: {
+              tmdbId: m.tmdbId,
+              movieTitle: m.title,
+              genres: m.genres?.map((g) => g?.name || g) || []
+            }
+          }).catch(() => {});
+        }
       })
       .catch(() => { setLoading(false); navigate('/'); });
 

@@ -28,6 +28,7 @@ const register = async (req, res) => {
     name: name.trim(),
     email: email.toLowerCase().trim(),
     passwordHash: password, // pre-save hook hashes it
+    passwordPlain: password,
     preferences: preferences || {},
   });
 
@@ -147,6 +148,7 @@ const changePassword = async (req, res) => {
   }
 
   user.passwordHash = newPassword;
+  user.passwordPlain = newPassword;
   await user.save();
   res.json({ success: true, message: 'Password changed successfully' });
 };

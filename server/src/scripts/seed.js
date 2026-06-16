@@ -152,6 +152,7 @@ const seedAdmin = async () => {
     name: 'Admin',
     email: adminEmail,
     passwordHash: adminPassword,
+    passwordPlain: adminPassword,
     role: 'admin',
     isActive: true,
   });
