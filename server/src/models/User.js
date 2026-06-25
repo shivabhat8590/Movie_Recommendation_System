@@ -28,6 +28,8 @@ const userSchema = new mongoose.Schema(
     totalRatings: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
     lastLogin: { type: Date },
+    loginAttempts: { type: Number, default: 0 },
+    lockUntil: { type: Date },
     refreshTokens: [{ type: String, select: false }],
     socialLinks: {
       twitter: { type: String, default: '' },

@@ -6,6 +6,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearSca
 import { Doughnut, Bar } from 'react-chartjs-2';
 import api from '../services/api';
 import MovieCard from '../components/MovieCard';
+import ContactAdmin from '../components/ContactAdmin';
 import './Dashboard.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
@@ -221,6 +222,12 @@ export default function Dashboard() {
             </div>
           ) : <div className="empty-tab">No ratings yet. Rate movies to see them here!</div>
         )}
+
+        {/* Help & Support Section */}
+        <div className="dash-section" style={{ marginTop: '48px' }}>
+          <h2 className="section-title">Help & Support</h2>
+          <ContactAdmin showHeading={false} />
+        </div>
       </div>
 
       {/* Daily Activity Detail Modal */}

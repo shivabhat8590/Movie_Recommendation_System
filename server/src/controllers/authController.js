@@ -8,20 +8,39 @@ const generateAccessToken = (id, role) =>
 const generateRefreshToken = (id) =>
   jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' });
 
+// Helper to validate registration input
+const validateRegistration = async (name, email, password) => {
+  if (!name || !name.trim()) return 'Enter a valid username';
+  const nameTrimmed = name.trim();
+  if (nameTrimmed.length < 3) return 'Username must contain at least 3 characters';
+  if (nameTrimmed.length > 50) return 'Username must contain at most 50 characters';
+  if (!/^[a-zA-Z\s]+$/.test(nameTrimmed)) return 'Username cannot contain numbers or special characters';
+
+  if (!email || !email.trim()) return 'Enter a valid email';
+  const emailLower = email.toLowerCase().trim();
+  if (!/^\S+@\S+\.\S+$/.test(emailLower)) return 'Please enter a valid mail(e.g. example@gmail.com)';
+
+  const existing = await User.findOne({ email: emailLower });
+  if (existing) return 'Email already registered';
+
+  if (!password) return 'Enter a valid password';
+  if (password.length < 8) return 'Password must be at least 8 characters long';
+  if (password.length > 32) return 'Password must be at most 32 characters long';
+  if (!/[A-Z]/.test(password)) return 'Password must contain one uppercase letter';
+  if (!/[a-z]/.test(password)) return 'Password must contain one lowercase letter';
+  if (!/[0-9]/.test(password)) return 'Password must contain one number';
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return 'Password must contain one special character';
+
+  return null;
+};
+
 // POST /api/v1/auth/register
 const register = async (req, res) => {
   const { name, email, password, preferences } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ success: false, message: 'Name, email and password are required' });
-  }
-  if (password.length < 6) {
-    return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
-  }
-
-  const existing = await User.findOne({ email: email.toLowerCase() });
-  if (existing) {
-    return res.status(409).json({ success: false, message: 'Email already registered' });
+  const validationError = await validateRegistration(name, email, password);
+  if (validationError) {
+    return res.status(400).json({ success: false, message: validationError });
   }
 
   const user = await User.create({
@@ -39,7 +58,7 @@ const register = async (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: 'Account created successfully',
+    message: 'User account created successfully',
     data: { user, accessToken, refreshToken },
   });
 };
@@ -48,19 +67,51 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ success: false, message: 'Email and password are required' });
+  if (!email || !email.trim()) {
+    return res.status(400).json({ success: false, message: 'Enter a valid email' });
+  }
+  const emailLower = email.toLowerCase().trim();
+  if (!/^\S+@\S+\.\S+$/.test(emailLower)) {
+    return res.status(400).json({ success: false, message: 'Please enter a valid mail(e.g. example@gmail.com)' });
   }
 
-  const user = await User.findOne({ email: email.toLowerCase() }).select('+passwordHash +refreshTokens');
-  if (!user || !user.isActive) {
-    return res.status(401).json({ success: false, message: 'Invalid credentials' });
+  if (!password) {
+    return res.status(400).json({ success: false, message: 'Enter a valid password' });
+  }
+
+  const user = await User.findOne({ email: emailLower }).select('+passwordHash +refreshTokens');
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'No account found with this email' });
+  }
+
+  if (!user.isActive) {
+    return res.status(403).json({ success: false, message: 'Account is deactivated' });
+  }
+
+  // Check if account is locked
+  if (user.lockUntil && user.lockUntil > Date.now()) {
+    return res.status(403).json({ success: false, message: 'Your account has been temporarily locked. Please try again later.' });
   }
 
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
-    return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    // Increment login attempts
+    user.loginAttempts = (user.loginAttempts || 0) + 1;
+    if (user.loginAttempts >= 5) {
+      user.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // lock for 15 minutes
+      user.loginAttempts = 0; // reset attempts
+    }
+    await user.save();
+
+    if (user.lockUntil && user.lockUntil > Date.now()) {
+      return res.status(403).json({ success: false, message: 'Your account has been temporarily locked. Please try again later.' });
+    }
+    return res.status(401).json({ success: false, message: 'Incorrect password' });
   }
+
+  // Reset lock and attempts on successful login
+  user.loginAttempts = 0;
+  user.lockUntil = undefined;
 
   const accessToken = generateAccessToken(user._id, user.role);
   const refreshToken = generateRefreshToken(user._id);

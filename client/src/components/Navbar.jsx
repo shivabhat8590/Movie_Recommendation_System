@@ -20,6 +20,18 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const searchRef = useRef(null);
   const debounceRef = useRef(null);
+  const userMenuRef = useRef(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -127,13 +139,26 @@ export default function Navbar() {
         {/* Auth */}
         <div className="navbar-auth">
           {user ? (
-            <div className="user-menu">
-              <Link to="/dashboard" className="user-avatar">{user.name?.[0]?.toUpperCase()}</Link>
-              <div className="user-dropdown">
-                <Link to="/dashboard">Dashboard</Link>
-                {user?.role === 'admin' && !kidsMode && <Link to="/admin">Admin Panel</Link>}
-                <button onClick={handleLogout}>Logout</button>
-              </div>
+            <div className="user-menu" ref={userMenuRef}>
+              <button 
+                onClick={() => setDropdownOpen(!dropdownOpen)} 
+                className="user-avatar-btn"
+                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', outline: 'none' }}
+              >
+                <div className="user-avatar">{user.name?.[0]?.toUpperCase()}</div>
+              </button>
+              {dropdownOpen && (
+                <div className="user-dropdown show">
+                  <Link to="/dashboard" onClick={() => setDropdownOpen(false)}>Dashboard</Link>
+                  {user?.role === 'admin' && !kidsMode && (
+                    <>
+                      <Link to="/admin" onClick={() => setDropdownOpen(false)}>Admin Panel</Link>
+                      <Link to="/admin/credentials" onClick={() => setDropdownOpen(false)}>Admin Credentials</Link>
+                    </>
+                  )}
+                  <button onClick={() => { handleLogout(); setDropdownOpen(false); }}>Logout</button>
+                </div>
+              )}
             </div>
           ) : (
             <Link to="/auth" className="btn btn-primary" style={{ padding: '8px 20px', fontSize: '0.85rem' }}>Sign In</Link>
@@ -153,14 +178,19 @@ export default function Navbar() {
           {user && <Link to="/wishlist">Wishlist</Link>}
           {user && !kidsMode && <Link to="/chatbot">AI Chat</Link>}
           {user && <Link to="/dashboard">Dashboard</Link>}
-          {user?.role === 'admin' && !kidsMode && <Link to="/admin">Admin Panel</Link>}
+          {user?.role === 'admin' && !kidsMode && (
+            <>
+              <Link to="/admin">Admin Panel</Link>
+              <Link to="/admin/credentials">Admin Credentials</Link>
+            </>
+          )}
           
           {/* Kids Mode Toggle in Mobile */}
           <div className="mobile-kids-toggle-wrap" style={{ padding: '10px 0' }}>
             <button
               onClick={() => dispatch(toggleKidsMode())}
               className={`kids-toggle-btn ${kidsMode ? 'active' : ''}`}
-              style={{ width: '100%', justifyContent: 'center' }}
+              style={{ width: '100%', justifyContext: 'center' }}
             >
               <span>{kidsMode ? '👶 Kids Mode: ON' : '🎬 Kids Mode: OFF'}</span>
             </button>

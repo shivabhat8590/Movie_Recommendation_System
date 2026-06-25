@@ -61,3 +61,127 @@
   font-weight: 600; cursor: pointer; margin-left: 4px;
 }
 .auth-switch button:hover { text-decoration: underline; }
+
+.auth-help-section {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.82rem;
+}
+.auth-help-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+.auth-help-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+.auth-help-desc {
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+.auth-help-email {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: var(--transition);
+}
+.auth-help-email:hover {
+  text-decoration: underline;
+  color: var(--accent-hover);
+}
+
+/* Validation styles */
+.input-error {
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+.error-text {
+  color: #f87171;
+  font-size: 0.78rem;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Password strength */
+.password-strength-container {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-top: -6px;
+  font-size: 0.8rem;
+}
+.password-strength-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.strength-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+.strength-label.weak { color: #f87171; }
+.strength-label.medium { color: #fbbf24; }
+.strength-label.strong { color: #34d399; }
+
+.strength-bar-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.strength-bar-fill {
+  height: 100%;
+  width: 0;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+.strength-bar-fill.weak { background-color: #f87171; }
+.strength-bar-fill.medium { background-color: #fbbf24; }
+.strength-bar-fill.strong { background-color: #34d399; }
+
+/* Checklist */
+.password-rules-checklist .rules-header {
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.password-rules-checklist ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.password-rules-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  transition: color 0.3s ease;
+}
+.password-rules-checklist li.valid {
+  color: #34d399;
+}
+.password-rules-checklist li.invalid {
+  color: var(--text-muted);
+}
+.bullet-icon {
+  font-weight: bold;
+}
+
+

@@ -325,6 +325,13 @@ Always keep responses natural, human-like, and real-time.`;
   }
 
   // --- 4. Standard Mock Local Responder fallback ---
+  if (lastMessage.includes('contact admin') || lastMessage.includes('contact administrator') || lastMessage.includes('how can i contact') || lastMessage.includes('support') || lastMessage.includes('help')) {
+    return {
+      content: "I'm sorry, I couldn't find a suitable answer. If you still need assistance, please contact the administrator using the email below.",
+      movieSuggestions: []
+    };
+  }
+
   // 1. Specific movie query (whole-word boundary check to avoid false matches on small words like 'It')
   const mentionedMovie = mockMovies.find(m => {
     const titleClean = m.title.toLowerCase();

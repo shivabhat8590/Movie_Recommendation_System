@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import api from '../services/api';
 import { getSocket } from '../services/socket';
 import MovieCard from '../components/MovieCard';
+import ContactAdmin from '../components/ContactAdmin';
 import './Chatbot.css';
 
 export default function Chatbot() {
@@ -11,6 +12,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
   const bottomRef = useRef(null);
 
   const isMovieChildSafe = (m) => {
@@ -93,6 +95,29 @@ export default function Chatbot() {
         },
       ]);
       setLoading(false);
+
+      const hasSuggestions = movieSuggestions && movieSuggestions.length > 0;
+      if (!hasSuggestions) {
+        setFailedAttempts((prev) => {
+          const next = prev + 1;
+          if (next >= 2) {
+            setTimeout(() => {
+              setMessages((msgs) => [
+                ...msgs,
+                {
+                  role: 'assistant',
+                  content: "I'm sorry, I couldn't find a suitable answer. If you still need assistance, please contact the administrator using the email below.",
+                  showContactAdmin: true,
+                },
+              ]);
+            }, 500);
+            return 0;
+          }
+          return next;
+        });
+      } else {
+        setFailedAttempts(0);
+      }
     });
 
     // Handle real-time typing indicators
@@ -134,14 +159,39 @@ export default function Chatbot() {
       // Fallback if socket is not connected
       try {
         const { data } = await api.post('/chatbot/message', { message: messageContent, kidsMode });
+        const content = data.data.message.content;
+        const movieSuggestions = data.data.movieSuggestions || [];
         setMessages((prev) => [
           ...prev,
           {
             role: 'assistant',
-            content: data.data.message.content,
-            movieSuggestions: data.data.movieSuggestions || [],
+            content,
+            movieSuggestions,
           },
         ]);
+
+        const hasSuggestions = movieSuggestions.length > 0;
+        if (!hasSuggestions) {
+          setFailedAttempts((prev) => {
+            const next = prev + 1;
+            if (next >= 2) {
+              setTimeout(() => {
+                setMessages((msgs) => [
+                  ...msgs,
+                  {
+                    role: 'assistant',
+                    content: "I'm sorry, I couldn't find a suitable answer. If you still need assistance, please contact the administrator using the email below.",
+                    showContactAdmin: true,
+                  },
+                ]);
+              }, 500);
+              return 0;
+            }
+            return next;
+          });
+        } else {
+          setFailedAttempts(0);
+        }
       } catch {
         setMessages((prev) => [
           ...prev,
@@ -150,6 +200,24 @@ export default function Chatbot() {
             content: 'Sorry, I encountered an error. Please try again!',
           },
         ]);
+
+        setFailedAttempts((prev) => {
+          const next = prev + 1;
+          if (next >= 2) {
+            setTimeout(() => {
+              setMessages((msgs) => [
+                ...msgs,
+                {
+                  role: 'assistant',
+                  content: "I'm sorry, I couldn't find a suitable answer. If you still need assistance, please contact the administrator using the email below.",
+                  showContactAdmin: true,
+                },
+              ]);
+            }, 500);
+            return 0;
+          }
+          return next;
+        });
       }
       setLoading(false);
     }
@@ -221,12 +289,12 @@ export default function Chatbot() {
           color: 'linear-gradient(135deg, #10b981, #059669)'
         },
         {
-          id: 'top-imdb',
-          icon: '🏆',
-          title: 'Top IMDb Rated',
-          text: 'Recommend top IMDb movies',
-          desc: 'Highest rated, legendary cinema masterpieces',
-          color: 'linear-gradient(135deg, #f59e0b, #d97706)'
+          id: 'contact-admin',
+          icon: '📧',
+          title: 'Contact Admin',
+          text: 'How can I contact the administrator?',
+          desc: 'Need help? Get in touch with our support team',
+          color: 'linear-gradient(135deg, #3b82f6, #6c63ff)'
         },
         {
           id: 'underrated-scifi',
@@ -250,7 +318,7 @@ export default function Chatbot() {
         { id: 'mind-bending', label: '🌀 Mind-Bending', text: 'Recommend mind-bending movies' },
         { id: 'emotional', label: '🎭 Emotional', text: 'Recommend emotional movies' },
         { id: 'horror-friends', label: '🧟 Horror for Friends', text: 'Recommend horror movies for friends' },
-        { id: 'top-imdb', label: '🏆 Top IMDb', text: 'Recommend top IMDb movies' },
+        { id: 'contact-admin', label: '📧 Contact Admin', text: 'How can I contact the administrator?' },
         { id: 'underrated-scifi', label: '🛸 Underrated Sci-Fi', text: 'Recommend underrated sci-fi films' },
         { id: 'comedy', label: '🌈 Comedy & Joy', text: 'Recommend happy funny movies' }
       ];
@@ -296,6 +364,11 @@ export default function Chatbot() {
                       </div>
                     );
                   })()
+                )}
+                {m.role === 'assistant' && (m.showContactAdmin || m.content?.includes("contact the administrator using the email below")) && (
+                  <div style={{ paddingLeft: '42px', marginTop: '4px', width: '100%', maxWidth: '600px' }}>
+                    <ContactAdmin showHeading={false} />
+                  </div>
                 )}
               </div>
             ))}
@@ -363,6 +436,7 @@ export default function Chatbot() {
             </button>
           </form>
         </div>
+        <ContactAdmin showHeading={true} />
       </div>
     </div>
   );
